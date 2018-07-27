@@ -40,26 +40,18 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cursor=db.query("POSITION",null,null,null,null,null,null);
         return cursor;
     }
-    public void insert(String PostionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY){
+    public void insert(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv= new ContentValues();
-        cv.put("_PostionName",PostionName);
-        db.insert("POSITION",null,cv);
+        cv.put("_PositionName",PositionName);
         cv.put("_Upposition",Upposition);
-        db.insert("POSITION",null,cv);
         cv.put("_Imgpath",Imgpath);
-        db.insert("POSITION",null,cv);
         cv.put("_RangeX1", RangeX1);
-        db.insert("POSITION",null,cv);
         cv.put("_RangeY1",RangeY1);
-        db.insert("POSITION",null,cv);
         cv.put("_RangeX2",RangeX2);
-        db.insert("POSITION",null,cv);
         cv.put("_RangeY2",RangeY2);
-        db.insert("POSITION",null,cv);
         cv.put("_NodeX",NodeX);
-        db.insert("POSITION",null,cv);
-        cv.put("NodeY",NodeY);
+        cv.put("_NodeY",NodeY);
         db.insert("POSITION",null,cv);
     }
     public void delete(int id)
