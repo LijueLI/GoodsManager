@@ -20,7 +20,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " +"POSITION" +
                 "(_id INTEGER PRIMARY KEY  NOT NULL , " +
-                "_PositionName VARCHAR NOT NULL,"+
+                "_PositionName VARCHAR UNIQUE NOT NULL,"+
                 "_Upposition VARCHAR,"+
                 "_Imgpath VARCHAR,"+
                 "_RangeX1 INTEGER,"+
@@ -40,7 +40,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cursor=db.query("POSITION",null,null,null,null,null,null);
         return cursor;
     }
-    public void insert(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY){
+    public long insert(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv= new ContentValues();
         cv.put("_PositionName",PositionName);
@@ -52,7 +52,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("_RangeY2",RangeY2);
         cv.put("_NodeX",NodeX);
         cv.put("_NodeY",NodeY);
-        db.insert("POSITION",null,cv);
+        return db.insert("POSITION",null,cv);
     }
     public void delete(int id)
     {
