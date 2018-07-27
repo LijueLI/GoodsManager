@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">GoodsManager</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="home">首頁</string>
+    <string name="postionlist">位置列表</string>
+    <string name="update">更新</string>
+    <string name="add">新增</string>
+    <string name="delete">刪除</string>
+</resources>
