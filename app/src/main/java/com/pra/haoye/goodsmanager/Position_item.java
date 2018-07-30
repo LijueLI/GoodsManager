@@ -3,7 +3,7 @@ package com.pra.haoye.goodsmanager;
 public class Position_item {
         private int type;
         private String Positionname,Upposition,Imgpath;
-        private int RangeX1,RangeY1,RangeX2,RangeY2,NodeX,NodeY;
+        private int RangeX1,RangeY1,RangeX2,RangeY2,NodeX,NodeY,ID;
         public Position_item(String Positionname,String UpPosition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY) {
             this.Positionname = Positionname;
             this.Upposition = UpPosition;
@@ -51,5 +51,10 @@ public class Position_item {
             NodeX = Node[0];
             NodeY = Node[1];
         }
-
+        public void setID(int ID){
+            this.ID = ID;
+        }
+        public int getID(){
+            return ID;
+        }
 }

@@ -40,6 +40,11 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cursor=db.query("POSITION",null,null,null,null,null,null);
         return cursor;
     }
+    public Cursor selectfromID(int ID){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("POSITION",null,"_id = "+Integer.toString(ID),null,null,null,null);
+        return cursor;
+    }
     public long insert(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv= new ContentValues();

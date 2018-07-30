@@ -55,7 +55,7 @@ public class MyAdapterP extends BaseAdapter {
         }
         Position_item P = (Position_item)getItem(position);
         holder.TPN.setText(P.getPositionname()+"\n"+P.getUpposition()+"\n"+P.getimgpath());
-        holder.TPR.setText("RangeX1="+P.getNode()[0]+"\n"+
+        holder.TPR.setText("RangeX1="+P.getRange()[0]+"\n"+
                             "RangeY1="+P.getRange()[1]+"\n"+
                             "RangeX2="+P.getRange()[2]+"\n"+
                             "RangeY2="+P.getRange()[3]+"\n"+
