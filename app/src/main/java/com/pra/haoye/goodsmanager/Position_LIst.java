@@ -24,18 +24,18 @@ public class Position_LIst extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("位置資訊");
 
-        update = getActivity().findViewById(R.id.PL_update);
-        add = getActivity().findViewById(R.id.PL_add);
-        delete = getActivity().findViewById(R.id.PL_delete);
-        choose = getActivity().findViewById(R.id.PL_choose);
-        PositionName = getActivity().findViewById(R.id.PL_PositionName);
-        Upposition = getActivity().findViewById(R.id.PL_Upposition);
-        RangeX1 = getActivity().findViewById(R.id.PL_RX);
-        RangeX2 = getActivity().findViewById(R.id.PL_RX2);
-        RangeY1 = getActivity().findViewById(R.id.PL_RY);
-        RangeY2 = getActivity().findViewById(R.id.PL_RY2);
-        NodeX = getActivity().findViewById(R.id.PL_NDX);
-        NodeY = getActivity().findViewById(R.id.PL_NDY);
+        update = getView().findViewById(R.id.PL_update);
+        add = getView().findViewById(R.id.PL_add);
+        delete = getView().findViewById(R.id.PL_delete);
+        choose = getView().findViewById(R.id.PL_choose);
+        PositionName = getView().findViewById(R.id.PL_PositionName);
+        Upposition = getView().findViewById(R.id.PL_Upposition);
+        RangeX1 = getView().findViewById(R.id.PL_RX);
+        RangeX2 = getView().findViewById(R.id.PL_RX2);
+        RangeY1 = getView().findViewById(R.id.PL_RY);
+        RangeY2 = getView().findViewById(R.id.PL_RY2);
+        NodeX = getView().findViewById(R.id.PL_NDX);
+        NodeY = getView().findViewById(R.id.PL_NDY);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
