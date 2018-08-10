@@ -1,14 +1,18 @@
 package com.pra.haoye.goodsmanager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import java.io.File;
 import java.util.List;
 
 public class MyAdapterP extends BaseAdapter {
@@ -34,9 +38,11 @@ public class MyAdapterP extends BaseAdapter {
     private class viewHolder{
         TextView TPN;
         TextView TPR;
-        public viewHolder(TextView TPN,TextView TPR){
+        ImageView TPImg;
+        public viewHolder(TextView TPN,TextView TPR,ImageView TPImg){
             this.TPN = TPN;
             this.TPR = TPR;
+            this.TPImg = TPImg;
         }
     }
     @Override
@@ -46,7 +52,8 @@ public class MyAdapterP extends BaseAdapter {
             convertView = myInflater.inflate(R.layout.position_listview,null);
             holder = new viewHolder(
                     (TextView) convertView.findViewById(R.id.position_listview),
-                    (TextView) convertView.findViewById(R.id.position_range)
+                    (TextView) convertView.findViewById(R.id.position_range),
+                    (ImageView) convertView.findViewById(R.id.position_img)
             );
              convertView.setTag(holder);
         }
@@ -61,6 +68,12 @@ public class MyAdapterP extends BaseAdapter {
                             "RangeY2="+P.getRange()[3]+"\n"+
                             "NodeX="+P.getNode()[0]+"\n"+
                             "NodeY="+P.getNode()[1]);
+        File file2 = new File(P.getimgpath());
+        if(file2.exists()){
+            Bitmap bm = BitmapFactory.decodeFile(P.getimgpath());
+            holder.TPImg.setImageBitmap(bm);
+        }
+        else holder.TPImg.setImageResource(android.R.color.transparent);
         return convertView;
     }
 }
