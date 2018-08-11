@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class Image_Choose extends AppCompatActivity {
     }
 
     @SuppressLint("NewApi")
-    public static String getPathByUri4kitkat(final Context context, final Uri uri) {
+    public String getPathByUri4kitkat(final Context context, final Uri uri) {
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
@@ -106,8 +107,14 @@ public class Image_Choose extends AppCompatActivity {
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
                 final String type = split[0];
+                Log.e("SDcard","NOP");
                 if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+                else{
+                    Log.e("SDcard",Environment.getExternalStorageDirectory()+"/"+uri.getPath().split(":")[1]);
+                    Toast.makeText(this,"目前不支援SDcard檔案",Toast.LENGTH_LONG).show();
+                    return Environment.getExternalStorageDirectory()+"/"+uri.getPath().split(":")[1];
                 }
             } else if (isDownloadsDocument(uri)) {// DownloadsProvider
                 final String id = DocumentsContract.getDocumentId(uri);
