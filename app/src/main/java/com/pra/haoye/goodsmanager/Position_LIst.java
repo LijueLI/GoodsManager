@@ -21,7 +21,7 @@ import android.widget.Toast;
 import java.io.File;
 
 public class Position_LIst extends Fragment {
-    private Button update,add,delete,choose,imgchoose,clear;
+    private Button update,add,delete,choose,imgchoose,clear,Upposition_choose;
     private EditText PositionName,Upposition,RangeX1,RangeX2,RangeY1,RangeY2,NodeX,NodeY;
     private ImageView img;
     private Intent Position_search,Img_choose;
@@ -38,6 +38,7 @@ public class Position_LIst extends Fragment {
         choose = getView().findViewById(R.id.PL_choose);
         clear = getView().findViewById(R.id.PL_Clear);
         imgchoose = getView().findViewById(R.id.PL_imgchoose);
+        Upposition_choose = getView().findViewById(R.id.PL_Upposition_choose);
         PositionName = getView().findViewById(R.id.PL_PositionName);
         Upposition = getView().findViewById(R.id.PL_Upposition);
         RangeX1 = getView().findViewById(R.id.PL_RX);
@@ -158,7 +159,7 @@ public class Position_LIst extends Fragment {
             @Override
             public void onClick(View view) {
                 Img_choose = new Intent(getActivity(),Image_Choose.class);
-                if(Imgpath != "") Img_choose.putExtra("Imgpath",Imgpath);
+                if(!Imgpath.equals("")) Img_choose.putExtra("Imgpath",Imgpath);
                 else Img_choose.putExtra("Imgpath","null");
                 startActivityForResult(Img_choose,2);
             }
@@ -177,9 +178,19 @@ public class Position_LIst extends Fragment {
                 NodeY.setText("");
                 img.setImageResource(android.R.color.transparent);
                 Imgpath = "";
+                update.setEnabled(false);
+                delete.setEnabled(false);
             }
         });
 
+        Upposition_choose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Position_search = new Intent(getActivity(),Position_Search.class);
+                Position_search.putExtra("ERF",3);
+                startActivityForResult(Position_search,3);
+            }
+        });
     }
     @Nullable
     @Override
@@ -227,6 +238,15 @@ public class Position_LIst extends Fragment {
                 else{
                     img.setImageResource(android.R.color.transparent);
                 }
+                break;
+            case 3:
+                int id = data.getExtras().getInt("_ID",0);
+                MyDBHelper Postion_item3 = new MyDBHelper(getContext());
+                Cursor cursor3 = Postion_item3.selectfromID(id);
+                cursor3.moveToFirst();
+                Upposition.setText(cursor3.getString(cursor3.getColumnIndexOrThrow("_PositionName")));
+                cursor3.close();
+                Postion_item3.close();
                 break;
             default:
                 break;

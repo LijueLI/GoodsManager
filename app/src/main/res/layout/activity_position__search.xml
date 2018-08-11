@@ -9,7 +9,7 @@
     <ListView
         android:id="@+id/PS_LV"
         android:layout_width="358dp"
-        android:layout_height="524dp"
+        android:layout_height="471dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -18,11 +18,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/PS_Searchtext"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/PS_Searchtext"
         android:layout_width="176dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -67,7 +67,7 @@
         app:layout_constraintBottom_toTopOf="@+id/PS_LV"
         app:layout_constraintEnd_toStartOf="@+id/PS_Position_choose"
         app:layout_constraintHorizontal_bias="0.741"
-        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintStart_toEndOf="@+id/PS_Searchtext"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 

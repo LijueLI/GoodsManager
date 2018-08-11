@@ -18,4 +18,5 @@
     <string name="ok">確認</string>
     <string name="imgdb">開啟圖庫</string>
     <string name="clear">清除</string>
+    <string name="photo">開啟相機</string>
 </resources>

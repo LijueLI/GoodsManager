@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Image_Choose extends AppCompatActivity {
-    private Button openimgdb,ok,clear;
+    private Button openimgdb,ok,clear,openphoto;
     private ImageView img;
     private Bitmap bm = null;
     private String path = "";
@@ -38,6 +38,7 @@ public class Image_Choose extends AppCompatActivity {
         IN=getIntent();
         path = IN.getStringExtra("Imgpath");
         openimgdb = findViewById(R.id.ImC_imgdb);
+        openphoto = findViewById(R.id.IMC_Photo);
         ok = findViewById(R.id.IMC_ok);
         clear = findViewById(R.id.IMC_clear);
         img = findViewById(R.id.imageView2);
@@ -64,6 +65,12 @@ public class Image_Choose extends AppCompatActivity {
             public void onClick(View view) {
                 path = "";
                 img.setImageResource(android.R.color.transparent);
+            }
+        });
+        openphoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
         if(!path.equals("null")){
