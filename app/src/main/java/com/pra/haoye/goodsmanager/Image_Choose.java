@@ -119,9 +119,13 @@ public class Image_Choose extends AppCompatActivity {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
                 else{
-                    Log.e("SDcard",Environment.getExternalStorageDirectory()+"/"+uri.getPath().split(":")[1]);
+                    int len = uri.getPath().split("/").length;
+                    String path = "/storage";
+                    for(int i = 2;i<len;i++) path += "/"+uri.getPath().split("/")[i];
+                    path = path.split(":")[0]+"/"+path.split(":")[1];
+                    Log.e("SDcard",path);
                     Toast.makeText(this,"目前不支援SDcard檔案",Toast.LENGTH_LONG).show();
-                    return Environment.getExternalStorageDirectory()+"/"+uri.getPath().split(":")[1];
+                    return path;
                 }
             } else if (isDownloadsDocument(uri)) {// DownloadsProvider
                 final String id = DocumentsContract.getDocumentId(uri);
