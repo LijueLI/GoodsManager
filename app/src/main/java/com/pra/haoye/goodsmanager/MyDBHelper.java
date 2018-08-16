@@ -2,9 +2,12 @@ package com.pra.haoye.goodsmanager;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.util.Range;
 
 public class MyDBHelper extends SQLiteOpenHelper {
@@ -74,5 +77,41 @@ public class MyDBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + "WORKLIST" );
+    }
+    public long update(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY ,int id){
+        try{
+            Log.d("update", Integer.toString(id));
+            Cursor cursor = this.selectfromPosition_name(PositionName);
+            cursor.moveToFirst();
+            Log.d("update",Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_id"))));
+            if(id != cursor.getInt(cursor.getColumnIndexOrThrow("_id"))) return 0;
+            else{
+                ContentValues cv = new ContentValues();
+                cv.put("_PositionName",PositionName);
+                cv.put("_Upposition",Upposition);
+                cv.put("_Imgpath",Imgpath);
+                cv.put("_RangeX1", RangeX1);
+                cv.put("_RangeY1",RangeY1);
+                cv.put("_RangeX2",RangeX2);
+                cv.put("_RangeY2",RangeY2);
+                cv.put("_NodeX",NodeX);
+                cv.put("_NodeY",NodeY);
+                SQLiteDatabase db = this.getWritableDatabase();
+                return db.update("POSITION",cv,"_id="+Integer.toString(id),null);
+            }
+        }catch (IllegalArgumentException e){
+            ContentValues cv = new ContentValues();
+            cv.put("_PositionName",PositionName);
+            cv.put("_Upposition",Upposition);
+            cv.put("_Imgpath",Imgpath);
+            cv.put("_RangeX1", RangeX1);
+            cv.put("_RangeY1",RangeY1);
+            cv.put("_RangeX2",RangeX2);
+            cv.put("_RangeY2",RangeY2);
+            cv.put("_NodeX",NodeX);
+            cv.put("_NodeY",NodeY);
+            SQLiteDatabase db = this.getWritableDatabase();
+            return db.update("POSITION",cv,"_id="+Integer.toString(id),null);
+        }
     }
 }

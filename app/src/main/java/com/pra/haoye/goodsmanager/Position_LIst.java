@@ -53,14 +53,7 @@ public class Position_LIst extends Fragment {
             @Override
             public void onClick(View view) {
                 MyDBHelper Postion_item = new MyDBHelper(getActivity());
-                if("".equals(PositionName.getText().toString().trim()) ||
-                   "".equals(Upposition.getText().toString().trim()) ||
-                   "".equals(RangeX1.getText().toString().trim()) ||
-                   "".equals(RangeY1.getText().toString().trim()) ||
-                   "".equals(RangeX2.getText().toString().trim()) ||
-                   "".equals(RangeY2.getText().toString().trim()) ||
-                   "".equals(NodeX.getText().toString().trim()) ||
-                   "".equals(NodeY.getText().toString().trim()) ){
+                if("".equals(PositionName.getText().toString().trim())){
                     Toast.makeText(getActivity(), "欄目不得為空", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -80,12 +73,12 @@ public class Position_LIst extends Fragment {
                         Toast OK = Toast.makeText(getActivity(), "新增成功", Toast.LENGTH_LONG);
                         PositionName.setText("");
                         Upposition.setText("");
-                        RangeX1.setText("");
-                        RangeY1.setText("");
-                        RangeX2.setText("");
-                        RangeY2.setText("");
-                        NodeX.setText("");
-                        NodeY.setText("");
+                        RangeX1.setText("0");
+                        RangeY1.setText("0");
+                        RangeX2.setText("0");
+                        RangeY2.setText("0");
+                        NodeX.setText("0");
+                        NodeY.setText("0");
                         img.setImageResource(android.R.color.transparent);
                         Imgpath = "";
                         OK.show();
@@ -112,12 +105,12 @@ public class Position_LIst extends Fragment {
                 Toast OK = Toast.makeText(getActivity(), "刪除成功", Toast.LENGTH_LONG);
                 PositionName.setText("");
                 Upposition.setText("");
-                RangeX1.setText("");
-                RangeY1.setText("");
-                RangeX2.setText("");
-                RangeY2.setText("");
-                NodeX.setText("");
-                NodeY.setText("");
+                RangeX1.setText("0");
+                RangeY1.setText("0");
+                RangeX2.setText("0");
+                RangeY2.setText("0");
+                NodeX.setText("0");
+                NodeY.setText("0");
                 img.setImageResource(android.R.color.transparent);
                 Imgpath = "";
                 OK.show();
@@ -129,8 +122,7 @@ public class Position_LIst extends Fragment {
             @Override
             public void onClick(View view) {
                 MyDBHelper Postion_item = new MyDBHelper(getContext());
-                Postion_item.delete(ID);
-                Postion_item.insert(PositionName.getText().toString(),
+                long ERRU=Postion_item.update(PositionName.getText().toString(),
                         Upposition.getText().toString(),
                         Imgpath,
                         Integer.parseInt(RangeX1.getText().toString()),
@@ -138,20 +130,26 @@ public class Position_LIst extends Fragment {
                         Integer.parseInt(RangeX2.getText().toString()),
                         Integer.parseInt(RangeY2.getText().toString()),
                         Integer.parseInt(NodeX.getText().toString()),
-                        Integer.parseInt(NodeY.getText().toString()));
-                Toast OK = Toast.makeText(getActivity(), "更新成功", Toast.LENGTH_LONG);
-                PositionName.setText("");
-                Upposition.setText("");
-                RangeX1.setText("");
-                RangeY1.setText("");
-                RangeX2.setText("");
-                RangeY2.setText("");
-                NodeX.setText("");
-                NodeY.setText("");
-                img.setImageResource(android.R.color.transparent);
-                Imgpath = "";
-                OK.show();
-                Postion_item.close();
+                        Integer.parseInt(NodeY.getText().toString()),
+                        ID);
+                if(ERRU != 0) {
+                    Toast OK = Toast.makeText(getActivity(), "更新成功", Toast.LENGTH_LONG);
+                    PositionName.setText("");
+                    Upposition.setText("");
+                    RangeX1.setText("0");
+                    RangeY1.setText("0");
+                    RangeX2.setText("0");
+                    RangeY2.setText("0");
+                    NodeX.setText("0");
+                    NodeY.setText("0");
+                    img.setImageResource(android.R.color.transparent);
+                    Imgpath = "";
+                    OK.show();
+                    Postion_item.close();
+                }
+                else{
+                    Toast.makeText(getActivity(),"更新失敗",Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -170,12 +168,12 @@ public class Position_LIst extends Fragment {
             public void onClick(View view) {
                 PositionName.setText("");
                 Upposition.setText("");
-                RangeX1.setText("");
-                RangeY1.setText("");
-                RangeX2.setText("");
-                RangeY2.setText("");
-                NodeX.setText("");
-                NodeY.setText("");
+                RangeX1.setText("0");
+                RangeY1.setText("0");
+                RangeX2.setText("0");
+                RangeY2.setText("0");
+                NodeX.setText("0");
+                NodeY.setText("0");
                 img.setImageResource(android.R.color.transparent);
                 Imgpath = "";
                 update.setEnabled(false);
