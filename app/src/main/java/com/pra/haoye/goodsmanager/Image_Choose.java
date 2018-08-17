@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -115,6 +117,65 @@ public class Image_Choose extends AppCompatActivity {
                 img.setImageBitmap(bm);
             }
         }
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        //廖柏州的原程式碼
+        img.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                if(bm != null) {
+                    float touchX,touchY;
+                    PointF p1 = new PointF(0,0);//笫一點
+                    PointF p2 = new PointF(0,0);//第二點
+                    PointF move_p = new PointF(0,0);//移動初始位置
+                    float mdx=0;
+                    float mdy=0;
+                    touchX = event.getX();       // 觸控的 X 軸位置
+                    touchY = event.getY();  // 觸控的 Y 軸位置
+
+                    // 判斷觸控動作
+                    switch (event.getAction()) {
+
+                        case MotionEvent.ACTION_DOWN:  // 按下
+                            if (p1.x == 0 && p1.y == 0) {
+                                p1 = new PointF(touchX, touchY);
+                                p2 = new PointF(touchX, touchY);
+                            } else move_p = new PointF(touchX, touchY);
+                            break;
+
+                        case MotionEvent.ACTION_MOVE:  // 拖曳移動
+                            if (move_p.x == 0 && move_p.y == 0) p2 = new PointF(touchX, touchY);
+                            else {
+                                mdx = touchX - move_p.x;
+                                mdy = touchY - move_p.y;
+                            }
+                            break;
+
+                        case MotionEvent.ACTION_UP:  // 放開 //設定完成
+
+                            p1.x = p1.x + mdx;
+                            p1.y = p1.y + mdy;
+                            p2.x = p2.x + mdx;
+                            p2.y = p2.y + mdy;
+                            mdx = 0;
+                            mdy = 0;
+                            // 設定 TextView 內容
+                            break;
+                    }
+                    float scalVal=(float)((float)bm.getWidth()/(float)img.getWidth());
+                    x1 = (int) (scalVal * (p1.x + mdx));
+                    x2 = (int) (scalVal * (p2.x + mdx));
+                    y1 = (int) (scalVal * (p1.y + mdy));
+                    y2 = (int) (scalVal * (p2.y + mdy));
+
+                    ImgDrawRect();//畫框
+
+                }
+                return true;
+            }
+        });
     }
 
     @Override
