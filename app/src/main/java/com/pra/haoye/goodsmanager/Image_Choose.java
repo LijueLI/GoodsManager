@@ -1,18 +1,26 @@
 package com.pra.haoye.goodsmanager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,12 +32,19 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+
 public class Image_Choose extends AppCompatActivity {
     private Button openimgdb,ok,clear,openphoto;
     private ImageView img;
     private Bitmap bm = null;
     private String path = "";
     private Intent IN;
+    private Uri uri;
+    private int x1,x2,y1,y2;
+    private static final String[] permissioncameras = new String[]{Manifest.permission.CAMERA};
+    private static final String[] PERMISSION_EXTERNAL_STORAGE = new String[] {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +61,17 @@ public class Image_Choose extends AppCompatActivity {
         openimgdb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
-                getAlbum.setType("image/*");
-                startActivityForResult(getAlbum, 0);
+                int permissionWrite = ActivityCompat.checkSelfPermission(Image_Choose.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if(permissionWrite != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(Image_Choose.this, PERMISSION_EXTERNAL_STORAGE,
+                            100);
+                }
+                else{
+                    Intent getAlbum = new Intent(Intent.ACTION_GET_CONTENT);
+                    getAlbum.setType("image/*");
+                    startActivityForResult(getAlbum, 0);
+                }
             }
         });
         ok.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +93,19 @@ public class Image_Choose extends AppCompatActivity {
         openphoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                int permissioncamera = ActivityCompat.checkSelfPermission(Image_Choose.this,
+                        Manifest.permission.CAMERA);
+                if(permissioncamera != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(Image_Choose.this,permissioncameras ,131);
+                }
+                else {
+                     uri = getContentResolver().insert(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            new ContentValues());
+                    Intent IntentObj = new Intent("android.media.action.IMAGE_CAPTURE");
+                    IntentObj.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                    startActivityForResult(IntentObj, 13);
+                }
             }
         });
         if(!path.equals("null")){
@@ -94,10 +129,21 @@ public class Image_Choose extends AppCompatActivity {
         if (requestCode == 0) {
             try {
                 Uri originalUri = data.getData(); //獲得圖片的uri
-                bm = MediaStore.Images.Media.getBitmap(resolver, originalUri); //顯得到bitmap圖片
                 Log.e("fileuri", originalUri.toString());
+                bm = MediaStore.Images.Media.getBitmap(resolver, originalUri); //顯得到bitmap圖片
                 //這裏開始的第二部分，獲取圖片的路徑：
                 path = getPathByUri4kitkat(this, originalUri);
+                img.setImageBitmap(bm);
+            } catch (IOException e) {
+                Log.e("err", e.toString());
+            }
+        }
+        else if(requestCode == 13){
+            try {
+                Log.e("fileuri", uri.toString());
+                bm = MediaStore.Images.Media.getBitmap(resolver, uri); //顯得到bitmap圖片
+                //這裏開始的第二部分，獲取圖片的路徑：
+                path = getPathByUri4kitkat(this, uri);
                 img.setImageBitmap(bm);
             } catch (IOException e) {
                 Log.e("err", e.toString());
@@ -208,5 +254,20 @@ public class Image_Choose extends AppCompatActivity {
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
 
+    }
+
+    public void   ImgDrawRect( ) {
+
+        Bitmap vBitmap = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), bm.getConfig());
+        Paint mpaint = new Paint();
+        Paint mpaintStr = new Paint();
+        Paint paint = new Paint();
+        Canvas canvas = new Canvas(vBitmap);
+        canvas.drawBitmap(bm, new Matrix(), paint);
+        Canvas vBitmapCanvas = new Canvas(vBitmap);
+        vBitmapCanvas.drawRect(x1, y1, x2, y2, mpaint);
+        canvas.drawText("X:" + x1 + "Y::" + y1, x1 - 10, y2 + 70, mpaintStr);
+        canvas.drawText("X:" + x2 + "Y::" + y2, x1 - 10, y2, mpaintStr);
+        img.setImageBitmap(vBitmap);
     }
 }
