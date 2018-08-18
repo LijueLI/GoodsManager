@@ -26,7 +26,7 @@ public class Position_LIst extends Fragment {
     private ImageView img;
     private Intent Position_search,Img_choose;
     private String Imgpath = "";
-    private int ID;
+    private int ID,Rotate = 0;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -60,12 +60,13 @@ public class Position_LIst extends Fragment {
                     long ER = Postion_item.insert(PositionName.getText().toString(),
                             Upposition.getText().toString(),
                             Imgpath,
-                            Integer.parseInt(RangeX1.getText().toString()),
-                            Integer.parseInt(RangeY1.getText().toString()),
-                            Integer.parseInt(RangeX2.getText().toString()),
-                            Integer.parseInt(RangeY2.getText().toString()),
+                            Float.parseFloat(RangeX1.getText().toString()),
+                            Float.parseFloat(RangeY1.getText().toString()),
+                            Float.parseFloat(RangeX2.getText().toString()),
+                            Float.parseFloat(RangeY2.getText().toString()),
                             Integer.parseInt(NodeX.getText().toString()),
-                            Integer.parseInt(NodeY.getText().toString()));
+                            Integer.parseInt(NodeY.getText().toString()),
+                            Rotate);
                     if (ER == -1) {
                         Toast Err = Toast.makeText(getActivity(), "新增失敗", Toast.LENGTH_LONG);
                         Err.show();
@@ -81,6 +82,9 @@ public class Position_LIst extends Fragment {
                         NodeY.setText("0");
                         img.setImageResource(android.R.color.transparent);
                         Imgpath = "";
+                        Rotate = 0;
+                        delete.setEnabled(false);
+                        update.setEnabled(false);
                         OK.show();
                     }
                     Postion_item.close();
@@ -113,6 +117,9 @@ public class Position_LIst extends Fragment {
                 NodeY.setText("0");
                 img.setImageResource(android.R.color.transparent);
                 Imgpath = "";
+                Rotate = 0;
+                delete.setEnabled(false);
+                update.setEnabled(false);
                 OK.show();
                 Postion_item.close();
             }
@@ -125,12 +132,13 @@ public class Position_LIst extends Fragment {
                 long ERRU=Postion_item.update(PositionName.getText().toString(),
                         Upposition.getText().toString(),
                         Imgpath,
-                        Integer.parseInt(RangeX1.getText().toString()),
-                        Integer.parseInt(RangeY1.getText().toString()),
-                        Integer.parseInt(RangeX2.getText().toString()),
-                        Integer.parseInt(RangeY2.getText().toString()),
+                        Float.parseFloat(RangeX1.getText().toString()),
+                        Float.parseFloat(RangeY1.getText().toString()),
+                        Float.parseFloat(RangeX2.getText().toString()),
+                        Float.parseFloat(RangeY2.getText().toString()),
                         Integer.parseInt(NodeX.getText().toString()),
                         Integer.parseInt(NodeY.getText().toString()),
+                        Rotate,
                         ID);
                 if(ERRU != 0) {
                     Toast OK = Toast.makeText(getActivity(), "更新成功", Toast.LENGTH_LONG);
@@ -144,6 +152,9 @@ public class Position_LIst extends Fragment {
                     NodeY.setText("0");
                     img.setImageResource(android.R.color.transparent);
                     Imgpath = "";
+                    Rotate = 0;
+                    delete.setEnabled(false);
+                    update.setEnabled(false);
                     OK.show();
                     Postion_item.close();
                 }
@@ -159,6 +170,13 @@ public class Position_LIst extends Fragment {
                 Img_choose = new Intent(getActivity(),Image_Choose.class);
                 if(!Imgpath.equals("")) Img_choose.putExtra("Imgpath",Imgpath);
                 else Img_choose.putExtra("Imgpath","null");
+                if(!"".equals(RangeX1.getText())){
+                    Img_choose.putExtra("RangeX1",Float.parseFloat(RangeX1.getText().toString()));
+                    Img_choose.putExtra("RangeY1",Float.parseFloat(RangeY1.getText().toString()));
+                    Img_choose.putExtra("RangeX2",Float.parseFloat(RangeX2.getText().toString()));
+                    Img_choose.putExtra("RangeY2",Float.parseFloat(RangeY2.getText().toString()));
+                    Img_choose.putExtra("Rotate",Rotate);
+                }
                 startActivityForResult(Img_choose,2);
             }
         });
@@ -176,6 +194,7 @@ public class Position_LIst extends Fragment {
                 NodeY.setText("0");
                 img.setImageResource(android.R.color.transparent);
                 Imgpath = "";
+                Rotate = 0;
                 update.setEnabled(false);
                 delete.setEnabled(false);
             }
@@ -206,13 +225,14 @@ public class Position_LIst extends Fragment {
                 cursor.moveToFirst();
                 PositionName.setText(cursor.getString(cursor.getColumnIndexOrThrow("_PositionName")));
                 Upposition.setText(cursor.getString(cursor.getColumnIndexOrThrow("_Upposition")));
-                RangeX1.setText(Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX1"))));
-                RangeY1.setText(Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY1"))));
-                RangeX2.setText(Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX2"))));
-                RangeY2.setText(Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY2"))));
+                RangeX1.setText(Float.toString(cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX1"))));
+                RangeY1.setText(Float.toString(cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY1"))));
+                RangeX2.setText(Float.toString(cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2"))));
+                RangeY2.setText(Float.toString(cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2"))));
                 NodeX.setText(Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX"))));
                 NodeY.setText(Integer.toString(cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY"))));
                 Imgpath = cursor.getString(cursor.getColumnIndexOrThrow("_Imgpath"));
+                Rotate = cursor.getInt(cursor.getColumnIndexOrThrow("_Rotate"));
                 cursor.close();
                 Postion_item.close();
                 File file1 = new File(Imgpath);
@@ -231,6 +251,11 @@ public class Position_LIst extends Fragment {
                 File file2 = new File(Imgpath);
                 if(file2.exists()){
                     Bitmap bm = BitmapFactory.decodeFile(Imgpath);
+                    RangeX1.setText(Float.toString(data.getFloatExtra("RangeX1",0)));
+                    RangeY1.setText(Float.toString(data.getFloatExtra("RangeY1",0)));
+                    RangeX2.setText(Float.toString(data.getFloatExtra("RangeX2",0)));
+                    RangeY2.setText(Float.toString(data.getFloatExtra("RangeY2",0)));
+                    Rotate = data.getIntExtra("Rotate",0);
                     img.setImageBitmap(bm);
                 }
                 else{

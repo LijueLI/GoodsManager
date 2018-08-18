@@ -26,12 +26,13 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 "_PositionName VARCHAR UNIQUE NOT NULL,"+
                 "_Upposition VARCHAR,"+
                 "_Imgpath VARCHAR,"+
-                "_RangeX1 INTEGER,"+
-                "_RangeY1 INTEGER,"+
-                "_RangeX2 INTEGER,"+
-                "_RangeY2 INTEGER,"+
+                "_RangeX1 FLOAT,"+
+                "_RangeY1 FLOAT,"+
+                "_RangeX2 FLOAT,"+
+                "_RangeY2 FLOAT,"+
                 "_NodeX INTEGER,"+
-                "_NodeY INTEGER)");
+                "_NodeY INTEGER,"+
+                "_Rotate INTEGER)");
     }
 
     @Override
@@ -53,7 +54,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM POSITION WHERE _PositionName like ?",new String[]{"%"+Position_name+"%"});
         return cursor;
     }
-    public long insert(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY){
+    public long insert(String PositionName,String Upposition,String Imgpath,float RangeX1,float RangeY1,float RangeX2,float RangeY2,int NodeX,int NodeY,int Rotate){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv= new ContentValues();
         cv.put("_PositionName",PositionName);
@@ -65,6 +66,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         cv.put("_RangeY2",RangeY2);
         cv.put("_NodeX",NodeX);
         cv.put("_NodeY",NodeY);
+        cv.put("_Rotate",Rotate);
         return db.insert("POSITION",null,cv);
     }
     public void delete(int id)
@@ -78,7 +80,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + "WORKLIST" );
     }
-    public long update(String PositionName,String Upposition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY ,int id){
+    public long update(String PositionName,String Upposition,String Imgpath,float RangeX1,float RangeY1,float RangeX2,float RangeY2,int NodeX,int NodeY,int Rotate ,int id){
         try{
             Log.d("update", Integer.toString(id));
             Cursor cursor = this.selectfromPosition_name(PositionName);
@@ -96,6 +98,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 cv.put("_RangeY2",RangeY2);
                 cv.put("_NodeX",NodeX);
                 cv.put("_NodeY",NodeY);
+                cv.put("_Rotate",Rotate);
                 SQLiteDatabase db = this.getWritableDatabase();
                 return db.update("POSITION",cv,"_id="+Integer.toString(id),null);
             }
@@ -110,6 +113,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
             cv.put("_RangeY2",RangeY2);
             cv.put("_NodeX",NodeX);
             cv.put("_NodeY",NodeY);
+            cv.put("_Rotate",Rotate);
             SQLiteDatabase db = this.getWritableDatabase();
             return db.update("POSITION",cv,"_id="+Integer.toString(id),null);
         }

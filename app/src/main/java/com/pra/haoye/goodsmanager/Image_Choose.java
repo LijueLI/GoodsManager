@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -37,16 +38,20 @@ import java.io.IOException;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class Image_Choose extends AppCompatActivity {
-    private Button openimgdb,ok,clear,openphoto;
+    private Button openimgdb,ok,clear,openphoto,rotate;
     private ImageView img;
     private Bitmap bm = null;
     private String path = "";
     private Intent IN;
     private Uri uri;
-    private int x1,x2,y1,y2;
+    private float x1 = 0,x2 = 0,y1 = 0,y2 = 0,touchX,touchY,mdx=0,mdy=0;
+    private int Rotate = 0;
     private static final String[] permissioncameras = new String[]{Manifest.permission.CAMERA};
     private static final String[] PERMISSION_EXTERNAL_STORAGE = new String[] {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE};
+    private PointF p1 = new PointF(0,0);//笫一點
+    private PointF p2 = new PointF(0,0);//第二點
+    private PointF move_p = new PointF(0,0);//移動初始位置
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +59,13 @@ public class Image_Choose extends AppCompatActivity {
 
         IN=getIntent();
         path = IN.getStringExtra("Imgpath");
+        Rotate = IN.getIntExtra("Rotate",0);
+
         openimgdb = findViewById(R.id.ImC_imgdb);
         openphoto = findViewById(R.id.IMC_Photo);
         ok = findViewById(R.id.IMC_ok);
         clear = findViewById(R.id.IMC_clear);
+        rotate = findViewById(R.id.IMC_Rotate);
         img = findViewById(R.id.imageView2);
 
         openimgdb.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +89,11 @@ public class Image_Choose extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.putExtra("imgpath",path);
+                intent.putExtra("RangeX1",x1);
+                intent.putExtra("RangeX2",x2);
+                intent.putExtra("RangeY1",y1);
+                intent.putExtra("RangeY2",y2);
+                intent.putExtra("Rotate",Rotate);
                 setResult(2,intent);
                 finish();
             }
@@ -89,6 +102,12 @@ public class Image_Choose extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 path = "";
+                bm = null;
+                x1 = 0;
+                x2 = 0;
+                y1 = 0;
+                y2 = 0;
+                Rotate = 0;
                 img.setImageResource(android.R.color.transparent);
             }
         });
@@ -110,11 +129,41 @@ public class Image_Choose extends AppCompatActivity {
                 }
             }
         });
+        rotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bm != null) {
+                    /* 建立 Matrix 物件 */
+                    Matrix matrix = new Matrix();
+                    /* 設定旋轉角度 */
+                    matrix.postRotate(90);
+                    /* 用原來的 Bitmap 產生一個新的 Bitmap */
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                    img.setImageBitmap(bm);
+                    if(Rotate < 4) Rotate++;
+                    else Rotate = 0;
+                }
+            }
+        });
         if(!path.equals("null")){
             File file1 = new File(path);
             if(file1.exists()){
-                Bitmap bm = BitmapFactory.decodeFile(path);
+                bm = BitmapFactory.decodeFile(path);
                 img.setImageBitmap(bm);
+                for(int i =0 ;i<Rotate;i++){
+                    /* 建立 Matrix 物件 */
+                    Matrix matrix = new Matrix();
+                    /* 設定旋轉角度 */
+                    matrix.postRotate(90);
+                    /* 用原來的 Bitmap 產生一個新的 Bitmap */
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                    img.setImageBitmap(bm);
+                }
+                x1 = IN.getFloatExtra("RangeX1",0);
+                y1 = IN.getFloatExtra("RangeY1",0);
+                x2 = IN.getFloatExtra("RangeX2",0);
+                y2 = IN.getFloatExtra("RangeY2",0);
+                ImgDrawRect();
             }
         }
     }
@@ -123,18 +172,12 @@ public class Image_Choose extends AppCompatActivity {
         super.onStart();
         //廖柏州的原程式碼
         img.setOnTouchListener(new View.OnTouchListener() {
+            float scalVal;
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if(bm != null) {
-                    float touchX,touchY;
-                    PointF p1 = new PointF(0,0);//笫一點
-                    PointF p2 = new PointF(0,0);//第二點
-                    PointF move_p = new PointF(0,0);//移動初始位置
-                    float mdx=0;
-                    float mdy=0;
                     touchX = event.getX();       // 觸控的 X 軸位置
                     touchY = event.getY();  // 觸控的 Y 軸位置
-
                     // 判斷觸控動作
                     switch (event.getAction()) {
 
@@ -143,6 +186,12 @@ public class Image_Choose extends AppCompatActivity {
                                 p1 = new PointF(touchX, touchY);
                                 p2 = new PointF(touchX, touchY);
                             } else move_p = new PointF(touchX, touchY);
+                            scalVal=((float)bm.getHeight()/(float)img.getHeight());
+                            x1 =  (scalVal * (p1.x + mdx));
+                            x2 =  (scalVal * (p2.x + mdx));
+                            y1 =  (scalVal * (p1.y + mdy));
+                            y2 =  (scalVal * (p2.y + mdy));
+                            ImgDrawRect();//畫框
                             break;
 
                         case MotionEvent.ACTION_MOVE:  // 拖曳移動
@@ -151,6 +200,12 @@ public class Image_Choose extends AppCompatActivity {
                                 mdx = touchX - move_p.x;
                                 mdy = touchY - move_p.y;
                             }
+                            scalVal=((float)bm.getWidth()/(float)img.getWidth());
+                            x1 =  (scalVal * (p1.x + mdx));
+                            x2 =  (scalVal * (p2.x + mdx));
+                            y1 =  (scalVal * (p1.y + mdy));
+                            y2 =  (scalVal * (p2.y + mdy));
+                            ImgDrawRect();//畫框
                             break;
 
                         case MotionEvent.ACTION_UP:  // 放開 //設定完成
@@ -161,17 +216,17 @@ public class Image_Choose extends AppCompatActivity {
                             p2.y = p2.y + mdy;
                             mdx = 0;
                             mdy = 0;
-                            // 設定 TextView 內容
+                            scalVal=((float)bm.getWidth()/(float)img.getWidth());
+                            x1 =  (scalVal * (p1.x + mdx));
+                            x2 =  (scalVal * (p2.x + mdx));
+                            y1 =  (scalVal * (p1.y + mdy));
+                            y2 =  (scalVal * (p2.y + mdy));
+                            ImgDrawRect();//畫框
+                            p1 = new PointF(0,0);//笫一點
+                            p2 = new PointF(0,0);//第二點
+                            move_p = new PointF(0,0);//移動初始位置
                             break;
                     }
-                    float scalVal=(float)((float)bm.getWidth()/(float)img.getWidth());
-                    x1 = (int) (scalVal * (p1.x + mdx));
-                    x2 = (int) (scalVal * (p2.x + mdx));
-                    y1 = (int) (scalVal * (p1.y + mdy));
-                    y2 = (int) (scalVal * (p2.y + mdy));
-
-                    ImgDrawRect();//畫框
-
                 }
                 return true;
             }
@@ -318,17 +373,23 @@ public class Image_Choose extends AppCompatActivity {
     }
 
     public void   ImgDrawRect( ) {
-
-        Bitmap vBitmap = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), bm.getConfig());
         Paint mpaint = new Paint();
         Paint mpaintStr = new Paint();
+        mpaint.setColor(Color.RED);
+        mpaint.setStyle(Paint.Style.STROKE);
+        mpaint.setStrokeWidth(10);
+        mpaintStr.setStrokeWidth(4);
+        mpaintStr.setTextSize(60);
+
+        mpaintStr.setColor(Color.GREEN);
+        Bitmap vBitmap = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), bm.getConfig());
         Paint paint = new Paint();
         Canvas canvas = new Canvas(vBitmap);
         canvas.drawBitmap(bm, new Matrix(), paint);
         Canvas vBitmapCanvas = new Canvas(vBitmap);
         vBitmapCanvas.drawRect(x1, y1, x2, y2, mpaint);
-        canvas.drawText("X:" + x1 + "Y::" + y1, x1 - 10, y2 + 70, mpaintStr);
-        canvas.drawText("X:" + x2 + "Y::" + y2, x1 - 10, y2, mpaintStr);
+        //canvas.drawText("X:" + x1 + "Y::" + y1, x1 - 10, y2 + 70, mpaintStr);
+        //canvas.drawText("X:" + x2 + "Y::" + y2, x1 - 10, y2, mpaintStr);
         img.setImageBitmap(vBitmap);
     }
 }

@@ -3,8 +3,9 @@ package com.pra.haoye.goodsmanager;
 public class Position_item {
         private int type;
         private String Positionname,Upposition,Imgpath;
-        private int RangeX1,RangeY1,RangeX2,RangeY2,NodeX,NodeY,ID;
-        public Position_item(String Positionname,String UpPosition,String Imgpath,int RangeX1,int RangeY1,int RangeX2,int RangeY2,int NodeX,int NodeY) {
+        private int NodeX,NodeY,ID;
+        private float RangeX1,RangeY1,RangeX2,RangeY2;
+        public Position_item(String Positionname,String UpPosition,String Imgpath,float RangeX1,float RangeY1,float RangeX2,float RangeY2,int NodeX,int NodeY) {
             this.Positionname = Positionname;
             this.Upposition = UpPosition;
             this.Imgpath = Imgpath;
@@ -33,8 +34,8 @@ public class Position_item {
         public void setImgpath(String Imgpath){
             this.Imgpath = Imgpath;
         }
-        public int[] getRange(){
-            int[] Range = {RangeX1,RangeY1,RangeX2,RangeY2};
+        public float[] getRange(){
+            float[] Range = {RangeX1,RangeY1,RangeX2,RangeY2};
             return Range;
         }
         public void setRange(int[] Range){

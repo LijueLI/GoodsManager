@@ -25,7 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Position_Search" />
-        <activity android:name=".Image_Choose"></activity>
+        <activity
+            android:name=".Image_Choose"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

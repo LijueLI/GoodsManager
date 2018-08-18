@@ -43,10 +43,10 @@ public class Position_Search extends AppCompatActivity {
             Position_item P = new Position_item(cursor.getString(cursor.getColumnIndexOrThrow("_PositionName")),
                                                 cursor.getString(cursor.getColumnIndexOrThrow("_Upposition")),
                                                 cursor.getString(cursor.getColumnIndexOrThrow("_Imgpath")),
-                                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX1")),
-                                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY1")),
-                                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX2")),
-                                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY2")),
+                                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX1")),
+                                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY1")),
+                                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2")),
+                                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2")),
                                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX")),
                                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")));
             P.setID(cursor.getInt((cursor.getColumnIndexOrThrow("_id"))));
@@ -111,10 +111,10 @@ public class Position_Search extends AppCompatActivity {
                         Position_item P = new Position_item(cursor.getString(cursor.getColumnIndexOrThrow("_PositionName")),
                                 cursor.getString(cursor.getColumnIndexOrThrow("_Upposition")),
                                 cursor.getString(cursor.getColumnIndexOrThrow("_Imgpath")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX1")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY1")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX2")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY2")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX1")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY1")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2")),
                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX")),
                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")));
                         P.setID(cursor.getInt((cursor.getColumnIndexOrThrow("_id"))));
@@ -133,10 +133,10 @@ public class Position_Search extends AppCompatActivity {
                         Position_item P = new Position_item(cursor.getString(cursor.getColumnIndexOrThrow("_PositionName")),
                                 cursor.getString(cursor.getColumnIndexOrThrow("_Upposition")),
                                 cursor.getString(cursor.getColumnIndexOrThrow("_Imgpath")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX1")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY1")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeX2")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_RangeY2")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX1")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY1")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2")),
+                                cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2")),
                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX")),
                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")));
                         P.setID(cursor.getInt((cursor.getColumnIndexOrThrow("_id"))));

@@ -19,4 +19,5 @@
     <string name="imgdb">開啟圖庫</string>
     <string name="clear">清除</string>
     <string name="photo">開啟相機</string>
+    <string name="rotate">旋轉</string>
 </resources>
