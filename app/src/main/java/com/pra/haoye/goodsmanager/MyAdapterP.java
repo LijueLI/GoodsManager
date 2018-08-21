@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -22,11 +24,34 @@ public class MyAdapterP extends BaseAdapter {
     private LayoutInflater myInflater;
     private List<Position_item> PI;
     private Context context;
+    private int scrollstatus = 0;
 
-    public MyAdapterP(Context context,List<Position_item> PI) {
+    public MyAdapterP(Context context, List<Position_item> PI, ListView lv) {
         myInflater = LayoutInflater.from(context);
         this.context = context;
         this.PI=PI;
+
+        lv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                switch (i){
+                    case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
+                        MyAdapterP.this.notifyDataSetChanged();
+                        scrollstatus = 0;
+                        break;
+                    case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+                        scrollstatus = 1;
+                        break;
+                    case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
+                        scrollstatus = 2;
+                        break;
+                }
+            }
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            }
+        });
     }
     @Override
     public int getCount(){
@@ -44,7 +69,7 @@ public class MyAdapterP extends BaseAdapter {
         TextView TPN;
         TextView TPR;
         ImageView TPImg;
-        public viewHolder(TextView TPN,TextView TPR,ImageView TPImg){
+        private viewHolder(TextView TPN,TextView TPR,ImageView TPImg){
             this.TPN = TPN;
             this.TPR = TPR;
             this.TPImg = TPImg;
@@ -66,14 +91,16 @@ public class MyAdapterP extends BaseAdapter {
         else{
             holder = (viewHolder) convertView.getTag();
         }
-        holder.TPN.setText(P.getPositionname()+"\n"+P.getUpposition()+"\n"+P.getimgpath());
-        holder.TPR.setText("RangeX1="+P.getRange()[0]+"\n"+
-                            "RangeY1="+P.getRange()[1]+"\n"+
-                            "RangeX2="+P.getRange()[2]+"\n"+
-                            "RangeY2="+P.getRange()[3]+"\n"+
-                            "NodeX="+P.getNode()[0]+"\n"+
-                            "NodeY="+P.getNode()[1]);
-        getimage(P,holder);
+        if(scrollstatus == 0) {
+            holder.TPN.setText(P.getPositionname() + "\n" + P.getUpposition() + "\n" + P.getimgpath());
+            holder.TPR.setText("RangeX1=" + P.getRange()[0] + "\n" +
+                    "RangeY1=" + P.getRange()[1] + "\n" +
+                    "RangeX2=" + P.getRange()[2] + "\n" +
+                    "RangeY2=" + P.getRange()[3] + "\n" +
+                    "NodeX=" + P.getNode()[0] + "\n" +
+                    "NodeY=" + P.getNode()[1]);
+            getimage(P, holder);
+        }
         return convertView;
     }
     private void getimage(final Position_item P,final viewHolder holder){

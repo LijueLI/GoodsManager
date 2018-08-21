@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class Image_Choose extends AppCompatActivity {
     private Button openimgdb,ok,clear,openphoto,rotate;
@@ -46,7 +47,7 @@ public class Image_Choose extends AppCompatActivity {
     private Uri uri;
     private float x1 = 0,x2 = 0,y1 = 0,y2 = 0,touchX,touchY,mdx=0,mdy=0;
     private int Rotate = 0;
-    private static final String[] permissioncameras = new String[]{Manifest.permission.CAMERA};
+    private static final String[] permissioncameras = new String[]{Manifest.permission.CAMERA,WRITE_EXTERNAL_STORAGE};
     private static final String[] PERMISSION_EXTERNAL_STORAGE = new String[] {
             Manifest.permission.WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE};
     private PointF p1 = new PointF(0,0);//笫一點
@@ -72,7 +73,7 @@ public class Image_Choose extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int permissionWrite = ActivityCompat.checkSelfPermission(Image_Choose.this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        Manifest.permission.READ_EXTERNAL_STORAGE);
                 if(permissionWrite != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(Image_Choose.this, PERMISSION_EXTERNAL_STORAGE,
                             100);

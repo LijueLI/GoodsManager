@@ -2,7 +2,6 @@ package com.pra.haoye.goodsmanager;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ public class Position_Search extends AppCompatActivity {
         }
         cursor.close();
         Postion_item.close();
-        adapter = new MyAdapterP(Position_Search.this,Position_listvt);
+        adapter = new MyAdapterP(Position_Search.this,Position_listvt,PositionlistV);
         PositionlistV.setAdapter(adapter);
         choose = findViewById(R.id.PS_Position_choose);
         search = findViewById(R.id.PS_Position_search);
@@ -152,10 +150,5 @@ public class Position_Search extends AppCompatActivity {
                 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 }
