@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -237,7 +236,12 @@ public class Position_LIst extends Fragment {
                 Postion_item.close();
                 File file1 = new File(Imgpath);
                 if(file1.exists()){
-                    Bitmap bm = BitmapFactory.decodeFile(Imgpath);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(Imgpath,options);
+                    options.inSampleSize=calculateInSampleSize(options,img.getWidth(),img.getHeight());
+                    options.inJustDecodeBounds = false;
+                    Bitmap bm = BitmapFactory.decodeFile(Imgpath,options);
                     img.setImageBitmap(bm);
                 }
                 else{
@@ -250,12 +254,18 @@ public class Position_LIst extends Fragment {
                 Imgpath = data.getStringExtra("imgpath");
                 File file2 = new File(Imgpath);
                 if(file2.exists()){
-                    Bitmap bm = BitmapFactory.decodeFile(Imgpath);
                     RangeX1.setText(Float.toString(data.getFloatExtra("RangeX1",0)));
                     RangeY1.setText(Float.toString(data.getFloatExtra("RangeY1",0)));
                     RangeX2.setText(Float.toString(data.getFloatExtra("RangeX2",0)));
                     RangeY2.setText(Float.toString(data.getFloatExtra("RangeY2",0)));
                     Rotate = data.getIntExtra("Rotate",0);
+
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(Imgpath,options);
+                    options.inSampleSize=calculateInSampleSize(options,img.getWidth(),img.getHeight());
+                    options.inJustDecodeBounds = false;
+                    Bitmap bm = BitmapFactory.decodeFile(Imgpath,options);
                     img.setImageBitmap(bm);
                 }
                 else{
@@ -274,5 +284,17 @@ public class Position_LIst extends Fragment {
             default:
                 break;
         }
+    }
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight){
+
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
     }
 }

@@ -54,8 +54,7 @@ public class Position_Search extends AppCompatActivity {
         }
         cursor.close();
         Postion_item.close();
-        adapter = new MyAdapterP(Position_Search.this,Position_listvt);
-        PositionlistV.setAdapter(adapter);
+        addatper();
         choose = findViewById(R.id.PS_Position_choose);
         search = findViewById(R.id.PS_Position_search);
 
@@ -152,6 +151,25 @@ public class Position_Search extends AppCompatActivity {
                 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    private void addatper(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                adapter = new MyAdapterP(Position_Search.this,Position_listvt);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PositionlistV.setAdapter(adapter);
+                    }
+                });
+            }
+        }).start();
     }
 }

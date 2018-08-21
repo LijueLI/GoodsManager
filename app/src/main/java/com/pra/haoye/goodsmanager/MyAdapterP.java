@@ -15,6 +15,8 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.List;
 
+import static com.pra.haoye.goodsmanager.Position_LIst.calculateInSampleSize;
+
 public class MyAdapterP extends BaseAdapter {
     private LayoutInflater myInflater;
     private List<Position_item> PI;
@@ -48,6 +50,7 @@ public class MyAdapterP extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
         viewHolder holder = null;
+        Position_item P = (Position_item)getItem(position);
         if(convertView == null){
             convertView = myInflater.inflate(R.layout.position_listview,null);
             holder = new viewHolder(
@@ -60,7 +63,6 @@ public class MyAdapterP extends BaseAdapter {
         else{
             holder = (viewHolder) convertView.getTag();
         }
-        Position_item P = (Position_item)getItem(position);
         holder.TPN.setText(P.getPositionname()+"\n"+P.getUpposition()+"\n"+P.getimgpath());
         holder.TPR.setText("RangeX1="+P.getRange()[0]+"\n"+
                             "RangeY1="+P.getRange()[1]+"\n"+
@@ -70,7 +72,12 @@ public class MyAdapterP extends BaseAdapter {
                             "NodeY="+P.getNode()[1]);
         File file2 = new File(P.getimgpath());
         if(file2.exists()){
-            Bitmap bm = BitmapFactory.decodeFile(P.getimgpath());
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds =true;
+            BitmapFactory.decodeFile(P.getimgpath());
+            options.inSampleSize=calculateInSampleSize(options,holder.TPImg.getWidth(),holder.TPImg.getHeight());
+            options.inJustDecodeBounds = false;
+            Bitmap bm = BitmapFactory.decodeFile(P.getimgpath(),options);
             holder.TPImg.setImageBitmap(bm);
         }
         else holder.TPImg.setImageResource(android.R.color.transparent);
