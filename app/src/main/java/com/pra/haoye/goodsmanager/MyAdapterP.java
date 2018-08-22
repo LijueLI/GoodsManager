@@ -1,9 +1,9 @@
 package com.pra.haoye.goodsmanager;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +17,6 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.List;
 
-
-import static com.pra.haoye.goodsmanager.Position_LIst.calculateInSampleSize;
 
 public class MyAdapterP extends BaseAdapter {
     private LayoutInflater myInflater;
@@ -67,11 +65,9 @@ public class MyAdapterP extends BaseAdapter {
     }
     private class viewHolder{
         TextView TPN;
-        TextView TPR;
         ImageView TPImg;
-        private viewHolder(TextView TPN,TextView TPR,ImageView TPImg){
+        private viewHolder(TextView TPN,ImageView TPImg){
             this.TPN = TPN;
-            this.TPR = TPR;
             this.TPImg = TPImg;
         }
     }
@@ -83,7 +79,6 @@ public class MyAdapterP extends BaseAdapter {
             convertView = myInflater.inflate(R.layout.position_listview,null);
             holder = new viewHolder(
                     (TextView) convertView.findViewById(R.id.position_listview),
-                    (TextView) convertView.findViewById(R.id.position_range),
                     (ImageView) convertView.findViewById(R.id.position_img)
             );
              convertView.setTag(holder);
@@ -92,13 +87,7 @@ public class MyAdapterP extends BaseAdapter {
             holder = (viewHolder) convertView.getTag();
         }
         if(scrollstatus == 0) {
-            holder.TPN.setText(P.getPositionname() + "\n" + P.getUpposition() + "\n" + P.getimgpath());
-            holder.TPR.setText("RangeX1=" + P.getRange()[0] + "\n" +
-                    "RangeY1=" + P.getRange()[1] + "\n" +
-                    "RangeX2=" + P.getRange()[2] + "\n" +
-                    "RangeY2=" + P.getRange()[3] + "\n" +
-                    "NodeX=" + P.getNode()[0] + "\n" +
-                    "NodeY=" + P.getNode()[1]);
+            holder.TPN.setText("位置名稱 : "+P.getPositionname() + "\n" +"上層位置 : " + P.getUpposition() + "\n");
             getimage(P, holder);
         }
         return convertView;
@@ -117,6 +106,15 @@ public class MyAdapterP extends BaseAdapter {
                     options.inSampleSize=calculateInSampleSize(options,holder.TPImg.getWidth(),holder.TPImg.getHeight());
                     options.inJustDecodeBounds = false;
                     bm = BitmapFactory.decodeFile(P.getimgpath(),options);
+                    int Rotate = P.getRotate();
+                    for(int i =0 ;i<Rotate;i++){
+                        /* 建立 Matrix 物件 */
+                        Matrix matrix = new Matrix();
+                        /* 設定旋轉角度 */
+                        matrix.postRotate(90);
+                        /* 用原來的 Bitmap 產生一個新的 Bitmap */
+                        bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                    }
                 }
                 else End = true;
                 ((Position_Search)context).runOnUiThread(new Runnable() {
@@ -132,5 +130,17 @@ public class MyAdapterP extends BaseAdapter {
                 });
             }
         }).start();
+    }
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight){
+
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
     }
 }

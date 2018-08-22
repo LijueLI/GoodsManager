@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.squareup.leakcanary.RefWatcher;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,8 @@ public class Position_Search extends AppCompatActivity {
                                                 cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2")),
                                                 cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2")),
                                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX")),
-                                                cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")));
+                                                cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")),
+                                                cursor.getInt(cursor.getColumnIndexOrThrow("_Rotate")));
             P.setID(cursor.getInt((cursor.getColumnIndexOrThrow("_id"))));
             Position_listvt.add(P);
         }
@@ -114,7 +117,8 @@ public class Position_Search extends AppCompatActivity {
                                 cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2")),
                                 cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2")),
                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")));
+                                cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")),
+                                cursor.getInt(cursor.getColumnIndexOrThrow("_Rotate")));
                         P.setID(cursor.getInt((cursor.getColumnIndexOrThrow("_id"))));
                         PLI2.add(P);
                     }
@@ -136,7 +140,8 @@ public class Position_Search extends AppCompatActivity {
                                 cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeX2")),
                                 cursor.getFloat(cursor.getColumnIndexOrThrow("_RangeY2")),
                                 cursor.getInt(cursor.getColumnIndexOrThrow("_NodeX")),
-                                cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")));
+                                cursor.getInt(cursor.getColumnIndexOrThrow("_NodeY")),
+                                cursor.getInt(cursor.getColumnIndexOrThrow("_Rotate")));
                         P.setID(cursor.getInt((cursor.getColumnIndexOrThrow("_id"))));
                         PLI.add(P);
                     }
@@ -150,5 +155,12 @@ public class Position_Search extends AppCompatActivity {
                 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = LeakCanaryApplication.getRefWatcher(this);//1
+        refWatcher.watch(this);
     }
 }

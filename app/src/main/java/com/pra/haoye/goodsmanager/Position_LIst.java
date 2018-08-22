@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.leakcanary.RefWatcher;
 
 import java.io.File;
 
@@ -236,13 +239,7 @@ public class Position_LIst extends Fragment {
                 Postion_item.close();
                 File file1 = new File(Imgpath);
                 if(file1.exists()){
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(Imgpath,options);
-                    options.inSampleSize=calculateInSampleSize(options,img.getWidth(),img.getHeight());
-                    options.inJustDecodeBounds = false;
-                    Bitmap bm = BitmapFactory.decodeFile(Imgpath,options);
-                    img.setImageBitmap(bm);
+                    mybimapfactory();
                 }
                 else{
                     img.setImageResource(android.R.color.transparent);
@@ -260,13 +257,7 @@ public class Position_LIst extends Fragment {
                     RangeY2.setText(Float.toString(data.getFloatExtra("RangeY2",0)));
                     Rotate = data.getIntExtra("Rotate",0);
 
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(Imgpath,options);
-                    options.inSampleSize=calculateInSampleSize(options,img.getWidth(),img.getHeight());
-                    options.inJustDecodeBounds = false;
-                    Bitmap bm = BitmapFactory.decodeFile(Imgpath,options);
-                    img.setImageBitmap(bm);
+                    mybimapfactory();
                 }
                 else{
                     img.setImageResource(android.R.color.transparent);
@@ -285,7 +276,7 @@ public class Position_LIst extends Fragment {
                 break;
         }
     }
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight){
+    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight){
 
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -296,5 +287,40 @@ public class Position_LIst extends Fragment {
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
         return inSampleSize;
+    }
+    private void mybimapfactory(){
+        new Thread(new Runnable() {
+            private Bitmap bm;
+            @Override
+            public void run() {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(Imgpath,options);
+                options.inSampleSize=calculateInSampleSize(options,img.getWidth(),img.getHeight());
+                options.inJustDecodeBounds = false;
+                bm = BitmapFactory.decodeFile(Imgpath,options);
+                for(int i =0 ;i<Rotate;i++){
+                    /* 建立 Matrix 物件 */
+                    Matrix matrix = new Matrix();
+                    /* 設定旋轉角度 */
+                    matrix.postRotate(90);
+                    /* 用原來的 Bitmap 產生一個新的 Bitmap */
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        img.setImageBitmap(bm);
+                    }
+                });
+            }
+        }).start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = LeakCanaryApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 }
