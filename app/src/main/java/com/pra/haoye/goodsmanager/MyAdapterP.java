@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 
@@ -99,13 +100,17 @@ public class MyAdapterP extends BaseAdapter {
             @Override
             public void run() {
                 File file2 = new File(P.getimgpath());
+                WeakReference<File> fileWeakReference = new WeakReference<>(file2);
                 if(file2.exists()){
                     BitmapFactory.Options options = new BitmapFactory.Options();
+                    WeakReference<BitmapFactory.Options> optionsWeakReference = new WeakReference<>(options);
                     options.inJustDecodeBounds =true;
                     BitmapFactory.decodeFile(P.getimgpath());
-                    options.inSampleSize=calculateInSampleSize(options,holder.TPImg.getWidth(),holder.TPImg.getHeight());
+                    options.inSampleSize=calculateInSampleSize(optionsWeakReference,holder.TPImg.getWidth(),holder.TPImg.getHeight());
                     options.inJustDecodeBounds = false;
                     bm = BitmapFactory.decodeFile(P.getimgpath(),options);
+                    options = null;
+                    System.gc();
                     int Rotate = P.getRotate();
                     for(int i =0 ;i<Rotate;i++){
                         /* 建立 Matrix 物件 */
@@ -113,10 +118,14 @@ public class MyAdapterP extends BaseAdapter {
                         /* 設定旋轉角度 */
                         matrix.postRotate(90);
                         /* 用原來的 Bitmap 產生一個新的 Bitmap */
+                        Bitmap bmp = bm;
                         bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+                        bmp.recycle();
+                        System.gc();
                     }
                 }
                 else End = true;
+                file2 = null;
                 ((Position_Search)context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -130,11 +139,12 @@ public class MyAdapterP extends BaseAdapter {
                 });
             }
         }).start();
+        System.gc();
     }
-    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight){
+    public int calculateInSampleSize(WeakReference<BitmapFactory.Options> optionsWeakReference, int reqWidth, int reqHeight){
 
-        final int height = options.outHeight;
-        final int width = options.outWidth;
+        final int height = optionsWeakReference.get().outHeight;
+        final int width = optionsWeakReference.get().outWidth;
         int inSampleSize = 1;
         if (height > reqHeight || width > reqWidth) {
             final int heightRatio = Math.round((float) height / (float) reqHeight);
