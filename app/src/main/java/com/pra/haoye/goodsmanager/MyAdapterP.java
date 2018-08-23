@@ -91,6 +91,10 @@ public class MyAdapterP extends BaseAdapter {
             holder.TPN.setText("位置名稱 : "+P.getPositionname() + "\n" +"上層位置 : " + P.getUpposition() + "\n");
             getimage(P, holder);
         }
+        else if(scrollstatus == 2)
+        {
+            holder.TPImg.setImageResource(android.R.color.white);
+        }
         return convertView;
     }
     private void getimage(final Position_item P,final viewHolder holder){
@@ -105,7 +109,7 @@ public class MyAdapterP extends BaseAdapter {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     WeakReference<BitmapFactory.Options> optionsWeakReference = new WeakReference<>(options);
                     options.inJustDecodeBounds =true;
-                    BitmapFactory.decodeFile(P.getimgpath());
+                    BitmapFactory.decodeFile(P.getimgpath(),options);
                     options.inSampleSize=calculateInSampleSize(optionsWeakReference,holder.TPImg.getWidth(),holder.TPImg.getHeight());
                     options.inJustDecodeBounds = false;
                     bm = BitmapFactory.decodeFile(P.getimgpath(),options);
@@ -130,11 +134,12 @@ public class MyAdapterP extends BaseAdapter {
                     @Override
                     public void run() {
                         if(End) {
-                            holder.TPImg.setImageResource(android.R.color.transparent);
+                            holder.TPImg.setImageResource(android.R.color.white);
                         }
                         else{
                             holder.TPImg.setImageBitmap(bm);
                         }
+                        MyAdapterP.this.notifyDataSetChanged();
                     }
                 });
             }
