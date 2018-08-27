@@ -11,8 +11,8 @@
             android:id="@+id/nav_positionlist"
             android:title="@string/postionlist" />
         <item
-            android:id="@+id/nav_positiondata"
-            android:title="@string/pisition_data" />
+            android:id="@+id/nav_productadd"
+            android:title="@string/product_add" />
         <item
             android:id="@+id/nav_manage"
             android:title="Tools" />

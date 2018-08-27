@@ -89,6 +89,11 @@ public class MainActivity extends AppCompatActivity
                 tag = "positionlist";
                 itemStack.push(R.id.nav_positionlist);
                 break;
+            case R.id.nav_productadd:
+                fragment = new Product_Add();
+                tag = "productadd";
+                itemStack.push(R.id.nav_productadd);
+                break;
         }
         if(fragment != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
