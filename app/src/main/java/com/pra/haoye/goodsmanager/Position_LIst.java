@@ -296,7 +296,7 @@ public class Position_LIst extends Fragment {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(Imgpath,options);
-                options.inSampleSize=calculateInSampleSize(options,img.getWidth(),img.getHeight());
+                options.inSampleSize=calculateInSampleSize(options,img.getLayoutParams().width,img.getLayoutParams().height);
                 options.inJustDecodeBounds = false;
                 bm = BitmapFactory.decodeFile(Imgpath,options);
                 for(int i =0 ;i<Rotate;i++){

@@ -25,8 +25,7 @@ public class Position_Search extends AppCompatActivity {
     private List<Position_item> Position_listvt = new ArrayList<Position_item>();
     private MyAdapterP adapter;
     private Intent intent;
-    private Button choose,search;
-    private View viewF = null;
+    private Button search;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,32 +54,15 @@ public class Position_Search extends AppCompatActivity {
         }
         cursor.close();
         Postion_item.close();
-        adapter = new MyAdapterP(Position_Search.this,Position_listvt,PositionlistV);
+        adapter = new MyAdapterP(Position_Search.this,Position_listvt);
         PositionlistV.setAdapter(adapter);
-        choose = findViewById(R.id.PS_Position_choose);
+        adapter.notifyDataSetChanged();
         search = findViewById(R.id.PS_Position_search);
 
         PositionlistV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(viewF != view || viewF==null){
-                    if(viewF != null) viewF.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    view.setBackgroundColor(Color.parseColor("#9E9E9E"));
-                    viewF = view;
-                    choose.setEnabled(true);
-                    getId = Position_listvt.get(i).getID();
-                    Log.e("getID",Integer.toString(getId));
-                }
-                else {
-                    viewF.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                    viewF = null;
-                    choose.setEnabled(false);
-                }
-            }
-        });
-        choose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                getId = Position_listvt.get(i).getID();
                 switch (ERF) {
                     case 1:
                         Intent intent = new Intent();
@@ -155,6 +137,10 @@ public class Position_Search extends AppCompatActivity {
                 imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
     }
 
     @Override

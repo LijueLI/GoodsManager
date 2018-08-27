@@ -139,8 +139,10 @@ public class Image_Choose extends AppCompatActivity {
                     /* 設定旋轉角度 */
                     matrix.postRotate(90);
                     /* 用原來的 Bitmap 產生一個新的 Bitmap */
+                    Bitmap bmp = bm;
                     bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
                     img.setImageBitmap(bm);
+                    bmp.recycle();
                     if(Rotate < 4) Rotate++;
                     else Rotate = 0;
                 }
@@ -156,10 +158,12 @@ public class Image_Choose extends AppCompatActivity {
                     Matrix matrix = new Matrix();
                     /* 設定旋轉角度 */
                     matrix.postRotate(90);
+                    Bitmap bmp = bm;
                     /* 用原來的 Bitmap 產生一個新的 Bitmap */
                     bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
-                    img.setImageBitmap(bm);
+                    bmp.recycle();
                 }
+                img.setImageBitmap(bm);
                 x1 = IN.getFloatExtra("RangeX1",0);
                 y1 = IN.getFloatExtra("RangeY1",0);
                 x2 = IN.getFloatExtra("RangeX2",0);
@@ -173,7 +177,7 @@ public class Image_Choose extends AppCompatActivity {
         super.onStart();
         //廖柏州的原程式碼
         img.setOnTouchListener(new View.OnTouchListener() {
-            float scalVal;
+            float scalValH,scalValW,scalVal;
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if(bm != null) {
@@ -187,7 +191,9 @@ public class Image_Choose extends AppCompatActivity {
                                 p1 = new PointF(touchX, touchY);
                                 p2 = new PointF(touchX, touchY);
                             } else move_p = new PointF(touchX, touchY);
-                            scalVal=((float)bm.getHeight()/(float)img.getHeight());
+                            scalValW=((float)bm.getWidth()/(float)img.getWidth());
+                            scalValH = ((float)bm.getHeight()/(float)img.getHeight());
+                            scalVal = scalValH < scalValW ? scalValH : scalValW;
                             x1 =  (scalVal * (p1.x + mdx));
                             x2 =  (scalVal * (p2.x + mdx));
                             y1 =  (scalVal * (p1.y + mdy));
@@ -201,7 +207,9 @@ public class Image_Choose extends AppCompatActivity {
                                 mdx = touchX - move_p.x;
                                 mdy = touchY - move_p.y;
                             }
-                            scalVal=((float)bm.getWidth()/(float)img.getWidth());
+                            scalValW=((float)bm.getWidth()/(float)img.getWidth());
+                            scalValH = ((float)bm.getHeight()/(float)img.getHeight());
+                            scalVal = scalValH < scalValW ? scalValH : scalValW;
                             x1 =  (scalVal * (p1.x + mdx));
                             x2 =  (scalVal * (p2.x + mdx));
                             y1 =  (scalVal * (p1.y + mdy));
@@ -217,7 +225,9 @@ public class Image_Choose extends AppCompatActivity {
                             p2.y = p2.y + mdy;
                             mdx = 0;
                             mdy = 0;
-                            scalVal=((float)bm.getWidth()/(float)img.getWidth());
+                            scalValW=((float)bm.getWidth()/(float)img.getWidth());
+                            scalValH = ((float)bm.getHeight()/(float)img.getHeight());
+                            scalVal = scalValH < scalValW ? scalValH : scalValW;
                             x1 =  (scalVal * (p1.x + mdx));
                             x2 =  (scalVal * (p2.x + mdx));
                             y1 =  (scalVal * (p1.y + mdy));

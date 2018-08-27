@@ -1,7 +1,7 @@
 package com.pra.haoye.goodsmanager;
 
 public class Position_item {
-    private int type;
+    private Boolean choose = false;
     private String Positionname,Upposition,Imgpath;
     private int NodeX,NodeY,ID,Rotate;
     private float RangeX1,RangeY1,RangeX2,RangeY2;
@@ -70,5 +70,13 @@ public class Position_item {
     }
     public void setRotate(int rotate) {
         Rotate = rotate;
+    }
+
+    public Boolean getChoose() {
+        return choose;
+    }
+
+    public void setChoose(Boolean choose) {
+        this.choose = choose;
     }
 }

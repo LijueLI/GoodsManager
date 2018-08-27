@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +25,12 @@ import java.util.List;
 
 
 public class MyAdapterP extends BaseAdapter {
-    private LayoutInflater myInflater;
     private List<Position_item> PI;
-    private Context context;
-    private int scrollstatus = 0;
+    private WeakReference<Context> contextWeakReference;
 
-    public MyAdapterP(Context context, List<Position_item> PI, ListView lv) {
-        myInflater = LayoutInflater.from(context);
-        this.context = context;
-        this.PI=PI;
+    public MyAdapterP(Context context, List<Position_item> PI) {
+        contextWeakReference = new WeakReference<Context>(context);
+        this.PI = PI;
     }
     @Override
     public int getCount(){
@@ -49,31 +47,33 @@ public class MyAdapterP extends BaseAdapter {
     private class viewHolder{
         TextView TPN;
         ImageView TPImg;
-        private viewHolder(TextView TPN,ImageView TPImg){
+        public viewHolder(TextView TPN,ImageView TPImg){
             this.TPN = TPN;
             this.TPImg = TPImg;
         }
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
+        View view;
         viewHolder holder = null;
         Position_item P = (Position_item)getItem(position);
         if(convertView == null){
-            convertView = myInflater.inflate(R.layout.position_listview,null);
+            view = LayoutInflater.from(contextWeakReference.get()).inflate(R.layout.position_listview,parent,false);
             holder = new viewHolder(
-                    (TextView) convertView.findViewById(R.id.position_listview),
-                    (ImageView) convertView.findViewById(R.id.position_img)
+                    (TextView) view.findViewById(R.id.position_listview),
+                    (ImageView) view.findViewById(R.id.position_img)
             );
-             convertView.setTag(holder);
+             view.setTag(holder);
         }
         else{
+            view = convertView;
             holder = (viewHolder) convertView.getTag();
         }
-        holder.TPN.setText("位置名稱 : "+P.getPositionname() + "\n" +"上層位置 : " + P.getUpposition() + "\n");
-        TaskItem T = new TaskItem(holder.TPImg.getWidth(),holder.TPImg.getHeight(),P.getRotate(),P.getimgpath());
-        WeakReference<TaskItem> TW = new WeakReference<TaskItem>(T);
-        loadBitmap(T,holder.TPImg);
-        return convertView;
+        holder.TPN.setText("位置名稱 : " + P.getPositionname() + "\n" + "上層位置 : " + P.getUpposition() + "\n");
+        TaskItem T = new TaskItem(holder.TPImg.getLayoutParams().width, holder.TPImg.getLayoutParams().height, P.getRotate(), P.getimgpath());
+        loadBitmap(T, holder.TPImg);
+        Log.d("tete","done");
+        return view;
     }
 
     public int calculateInSampleSize(WeakReference<BitmapFactory.Options> optionsWeakReference, int reqWidth, int reqHeight){
@@ -91,7 +91,7 @@ public class MyAdapterP extends BaseAdapter {
 
     class BitmapWorktask extends AsyncTask<TaskItem,Void,Bitmap>{
         private final WeakReference<ImageView> imageViewWeakReference;
-        TaskItem TI;
+        TaskItem TI = null;
 
         public BitmapWorktask(ImageView imageView){
             imageViewWeakReference = new WeakReference<ImageView>(imageView);
@@ -108,7 +108,6 @@ public class MyAdapterP extends BaseAdapter {
             options.inJustDecodeBounds = false;
             Bitmap bm = BitmapFactory.decodeFile(TI.getPath(),options);
             options = null;
-            System.gc();
 
             int Rotate = TI.getRotate();
             for(int i =0 ;i<Rotate;i++){
@@ -160,13 +159,15 @@ public class MyAdapterP extends BaseAdapter {
         if (cancelPotentialWork(T, imageView)) {
             final BitmapWorktask task = new BitmapWorktask(imageView);
             final AsyncDrawable asyncDrawable =
-                    new AsyncDrawable(context.getResources(),null, task);
+                    new AsyncDrawable(contextWeakReference.get().getResources(),null, task);
             imageView.setImageDrawable(asyncDrawable);
             File file2 = new File(T.getPath());
             WeakReference<File> fileWeakReference = new WeakReference<>(file2);
             if(file2.exists()){
                 task.execute(T);
             }
+            file2 =null;
+            System.gc();
         }
     }
 
@@ -175,7 +176,7 @@ public class MyAdapterP extends BaseAdapter {
 
         if (bitmapWorkerTask != null) {
             final TaskItem TI = bitmapWorkerTask.TI;
-            if (T != TI) {
+            if (TI!=T) {
                 // 取消之前的任务
                 bitmapWorkerTask.cancel(true);
             } else {
@@ -199,7 +200,7 @@ public class MyAdapterP extends BaseAdapter {
     }
 
     private class TaskItem{
-        private int reqWidth,reqHeight,Rotate;
+        private int reqWidth,reqHeight,Rotate,ID;
         private String path;
 
         public TaskItem(int reqWidth, int reqHeight, int rotate, String path) {
